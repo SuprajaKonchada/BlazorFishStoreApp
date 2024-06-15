@@ -17,7 +17,6 @@ namespace BlazorFishStoreApp
 
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-
             builder.Services.AddScoped<FishService>();
 
 

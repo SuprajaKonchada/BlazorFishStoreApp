@@ -7,21 +7,29 @@
 <h3>Create Fish</h3>
 
 <EditForm Model="fish" OnValidSubmit="HandleValidSubmit" FormName="fishForm" method="post">
+    <DataAnnotationsValidator />
     <div class="form-group">
-        <label>Name</label>
+        <label>Name <span class="text-danger">*</span></label>
         <InputText class="form-control" @bind-Value="fish.Name" />
+        <ValidationMessage For="@(() => fish.Name)" class="text-danger" />
     </div>
+
     <div class="form-group">
-        <label>Age</label>
+        <label>Age (in months) <span class="text-danger">*</span></label>
         <InputNumber class="form-control" @bind-Value="fish.Age" />
+        <ValidationMessage For="@(() => fish.Age)" class="text-danger" />
     </div>
+
     <div class="form-group">
-        <label>Price</label>
+        <label>Price (in rupees) <span class="text-danger">*</span></label>
         <InputNumber class="form-control" @bind-Value="fish.Price" />
+        <ValidationMessage For="@(() => fish.Price)" class="text-danger" />
     </div>
+
     <div class="form-group">
-        <label>Lifespan</label>
+        <label>Lifespan (in years) <span class="text-danger">*</span></label>
         <InputNumber class="form-control" @bind-Value="fish.Lifespan" />
+        <ValidationMessage For="@(() => fish.Lifespan)" class="text-danger" />
     </div>
     <button type="submit" class="btn btn-primary">Save</button>
 </EditForm>
@@ -29,9 +37,12 @@
 @code {
     [SupplyParameterFromForm]
     public Fish fish { get; set; } = new();
+
+    /// <summary>
+    /// Handles the form submission when adding a new fish.
+    /// </summary>
     private async Task HandleValidSubmit()
     {
-        Console.WriteLine($"Name: {fish.Name}");
         if (!string.IsNullOrEmpty(fish.Name))
         {
             await FishService.AddFishAsync(fish);

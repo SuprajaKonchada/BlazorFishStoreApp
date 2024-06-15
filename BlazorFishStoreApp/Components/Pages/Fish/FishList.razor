@@ -3,8 +3,10 @@
 @using BlazorFishStoreApp.Models
 @inject FishService FishService
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <h3>Fish List</h3>
+<button @onclick="AddFishAsync" class="btn btn-success mb-2">Add Fish</button>
 
 @if (fishes == null)
 {
@@ -16,9 +18,9 @@ else
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Age</th>
-                <th>Price</th>
-                <th>Lifespan</th>
+                <th>Age(in months)</th>
+                <th>Price(in rupees)</th>
+                <th>Lifespan(in years)</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -31,8 +33,8 @@ else
                     <td>@fish.Price</td>
                     <td>@fish.Lifespan</td>
                     <td>
-                        <a href= "@($"/fish/edit/{fish.Id}")">Edit</a>
-                        <button>Delete</button>
+                        <button @onclick="() => EditFishAsync(fish.Id)" class="btn btn-primary btn-sm">Edit</button>
+                        <button @onclick="() => DeleteFish(fish.Id)" class="btn btn-danger btn-sm">Delete</button>
                     </td>
                 </tr>
             }
@@ -44,6 +46,9 @@ else
     private List<Fish> fishes;
     private string errorMessage;
 
+    /// <summary>
+    /// Initializes the component asynchronously and retrieves the list of fishes.
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         try
@@ -56,6 +61,43 @@ else
         }
     }
 
+    /// <summary>
+    /// Navigates to the create fish page.
+    /// </summary>
+    private async Task AddFishAsync()
+    {
+        try
+        {
+            NavigationManager.NavigateTo("/fish/create");
+            await Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred while navigating to create page: {ex.Message}";
+        }
+    }
+
+    /// <summary>
+    /// Navigates to the edit fish page for the specified fish ID.
+    /// </summary>
+    /// <param name="id">The ID of the fish to edit.</param>
+    private async Task EditFishAsync(int id)
+    {
+        try
+        {
+            NavigationManager.NavigateTo($"/fish/edit/{id}");
+            await Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred while navigating to edit page: {ex.Message}";
+        }
+    }
+    
+    /// <summary>
+    /// Deletes the fish with the specified ID.
+    /// </summary>
+    /// <param name="id">The ID of the fish to delete.</param>
     private async Task DeleteFish(int id)
     {
         try
