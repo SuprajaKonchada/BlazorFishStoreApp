@@ -1,0 +1,46 @@
+﻿@page "/fish/create"
+@using BlazorFishStoreApp.Services
+@using BlazorFishStoreApp.Models
+@inject FishService FishService
+@inject NavigationManager NavigationManager
+
+<h3>Create Fish</h3>
+
+<EditForm Model="fish" OnValidSubmit="HandleValidSubmit" FormName="fishForm" method="post">
+    <div class="form-group">
+        <label>Name</label>
+        <InputText class="form-control" @bind-Value="fish.Name" />
+    </div>
+    <div class="form-group">
+        <label>Age</label>
+        <InputNumber class="form-control" @bind-Value="fish.Age" />
+    </div>
+    <div class="form-group">
+        <label>Price</label>
+        <InputNumber class="form-control" @bind-Value="fish.Price" />
+    </div>
+    <div class="form-group">
+        <label>Lifespan</label>
+        <InputNumber class="form-control" @bind-Value="fish.Lifespan" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    public Fish fish { get; set; } = new();
+    private async Task HandleValidSubmit()
+    {
+        Console.WriteLine($"Name: {fish.Name}");
+        if (!string.IsNullOrEmpty(fish.Name))
+        {
+            await FishService.AddFishAsync(fish);
+            NavigationManager.NavigateTo("/fish");
+        }
+        else
+        {
+            Console.WriteLine("Fish name is null or empty!");
+        }
+    }
+
+}

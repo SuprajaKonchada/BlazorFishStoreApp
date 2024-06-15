@@ -1,0 +1,46 @@
+﻿@page "/fish/edit/{Id:int}"
+@using BlazorFishStoreApp.Services
+@using BlazorFishStoreApp.Models
+@inject FishService FishService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Fish</h3>
+
+<EditForm Model="fish" OnValidSubmit="HandleValidSubmit" method="post" FormName="EditForm">
+    <div class="form-group">
+        <label>Name</label>
+        <InputText class="form-control" @bind-Value="fish.Name" />
+    </div>
+    <div class="form-group">
+        <label>Age</label>
+        <InputNumber class="form-control" @bind-Value="fish.Age" />
+    </div>
+    <div class="form-group">
+        <label>Price</label>
+        <InputNumber class="form-control" @bind-Value="fish.Price" />
+    </div>
+    <div class="form-group">
+        <label>Lifespan</label>
+        <InputNumber class="form-control" @bind-Value="fish.Lifespan" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Fish fish = new Fish();
+
+    protected override async Task OnInitializedAsync()
+    {
+        fish = await FishService.GetFishByIdAsync(Id);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await FishService.UpdateFishAsync(fish);
+        NavigationManager.NavigateTo("/fish");
+    }
+}

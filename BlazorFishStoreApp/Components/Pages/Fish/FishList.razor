@@ -1,0 +1,71 @@
+﻿@page "/fish"
+@using BlazorFishStoreApp.Services
+@using BlazorFishStoreApp.Models
+@inject FishService FishService
+@inject NavigationManager NavigationManager
+
+<h3>Fish List</h3>
+
+@if (fishes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Price</th>
+                <th>Lifespan</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var fish in fishes)
+            {
+                <tr>
+                    <td>@fish.Name</td>
+                    <td>@fish.Age</td>
+                    <td>@fish.Price</td>
+                    <td>@fish.Lifespan</td>
+                    <td>
+                        <a href= "@($"/fish/edit/{fish.Id}")">Edit</a>
+                        <button>Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Fish> fishes;
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            fishes = await FishService.GetFishesAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+    }
+
+    private async Task DeleteFish(int id)
+    {
+        try
+        {
+            await FishService.DeleteFishAsync(id);
+            fishes = await FishService.GetFishesAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred while deleting: {ex.Message}";
+        }
+    }
+}
